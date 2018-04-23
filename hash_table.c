@@ -5,16 +5,27 @@
 #include "hash_table.h"
 #define MODULO 337
 
-int hash_size = 16;
+// int hash_size = 16;
 
 
 Hash_Table* new_HT() {
     Hash_Table *new;
     new = (Hash_Table*) malloc(sizeof(Hash_Table));
 
-    new->cur_size = hash_size;
+    new->cur_size = 16;
     new->cur_items = 0;
-    new->entries = calloc((size_t) hash_size, sizeof(K_V_Pair*));
+    new->entries = calloc((size_t) 16, sizeof(K_V_Pair*));
+
+    return new;
+}
+
+Hash_Table* resized_HT(int size) {
+    Hash_Table *new;
+    new = (Hash_Table*) malloc(sizeof(Hash_Table));
+
+    new->cur_size = size;
+    new->cur_items = 0;
+    new->entries = calloc((size_t) 16, sizeof(K_V_Pair*));
 
     return new;
 }
@@ -37,6 +48,7 @@ Hash_Table* resize(Hash_Table* dict) {
     // or halfing it if current items <= 25% of dict size. Reassigns indices
     // based on current size.
     printf("Resize starts\n");
+    int hash_size = 0;
     if (dict->cur_size > 3 * dict->cur_items) {
         hash_size = dict->cur_size / 2; // change hash size for resizing purposes.
     } else if (dict->cur_items * 4 >= dict->cur_size * 3){
@@ -45,21 +57,26 @@ Hash_Table* resize(Hash_Table* dict) {
         printf("Error. Resize should not have been called.");
         return dict;
     }
-    Hash_Table* new_dict = new_HT();
+    Hash_Table* new_dict = resized_HT(hash_size);
+    printf("dict cur size: %d\n", dict->cur_size);
     for (int i = 0; i < dict->cur_size; ++i) {
         K_V_Pair *current = dict->entries[i];
         while (current) {
-            new_dict->cur_items++;
+            printf("New dict current items: %d\n", ++(new_dict->cur_items));
+            printf("%s: %s\n", current->key, current->value);
             K_V_Pair *next = current->next;
-            int new_index = hash_index(current->key, hash_size);
+            int new_index = hash_index(current->key, new_dict->cur_size);
             current->next = NULL;
             current->prev = NULL;
             assign_index(new_dict, current, new_index);
             current = next;
         }
+        printf("i is %d\n", i);
     }
-    free(dict);
-    hash_size = 16; // reset hash size to default for a new hash.
+    if (dict) {
+        free(dict);
+    }
+    // hash_size = 16; // reset hash size to default for a new hash.
     printf("We're done!\n");
     return new_dict;
 }
@@ -79,20 +96,18 @@ void hash_insert(Hash_Table* dict, char* key, char* value) {
     // Checks if we need to resize the dict, and calls resize function if so.
     // Then, it generates a new key-value pair and hashes the key to find an
     // index. Then, calls the assign_index function.
-    // dict = resize(dict);
-    if (++dict->cur_items > ((dict->cur_size * 75) / 100)) {
+    if (++(dict->cur_items) > ((dict->cur_size * 75) / 100)) {
         dict = resize(dict);
     }
-    int i = hash_index(key, dict->cur_size);
+    int idx = hash_index(key, dict->cur_size);
     K_V_Pair *new_pair;
-    new_pair = find_key_in_hash_table(dict, key, i);
+    new_pair = find_key_in_hash_table(dict, key, idx);
     if (new_pair) {
-        // free(new_pair->value);
         new_pair->value = value;
         return;
     }
     new_pair = new_dict_entry(key, value);
-    assign_index(dict, new_pair, i);
+    assign_index(dict, new_pair, idx);
 }
 
 void hash_remove(Hash_Table* dict, char* key) {
@@ -115,8 +130,6 @@ void hash_remove(Hash_Table* dict, char* key) {
                 to_remove->next->prev = NULL;
             }
         }
-        // free(to_remove->key);
-        // free(to_remove->value);
         free(to_remove);
         return;
     }
@@ -135,11 +148,10 @@ void assign_index(Hash_Table* dict, K_V_Pair* new_pair, int i) {
         while (current) {
             if (strcmp(current->key, new_pair->key) == 0) {
                 current->key = new_pair->key;
-                // free(new_pair->value);
                 free(new_pair);
                 return;
             }
-            if (!current->next) {
+            if (!(current->next)) {
                 current->next = new_pair;
                 new_pair->prev = current;
                 return;
