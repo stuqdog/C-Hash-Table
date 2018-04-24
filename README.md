@@ -19,6 +19,8 @@ To search by key, use `hash_search(new, key);`. This will return a pointer to th
 
 To delete a key, use `hash_delete(new, key)`. This will delete the key-value pair if it exists in the hash table. Otherwise, it will printf a notice that the key did not exist. 
 
+If you're curious about the current size of the table, `hash_size(new)` will printf the current size of new's array and the number of items currently in that array. Its return value is the number of items in the array. 
+
 
 ##### Technical details
 Starting table size is 16 elements. Once a table is 75% full it doubles in size. Once it drops below 25% full it halves in size. Collisions are resolved via linked lists. 
@@ -27,7 +29,7 @@ Hashing is done by multiplying the value of each character by its index in the s
 
 
 ##### Next steps
-Expanding the functionality so the table can take in different variable types as keys and values is high on the list. Beyond that, general refactoring to improve the speed and readability of the code. 
+Expanding the functionality so the table can take in different variable types as keys and values is high on the list. Beyond that, general refactoring to improve the speed and readability of the code, and adding additional features. 
 
 
 ##### I have suggestions/I have a bug to report/I want to help
