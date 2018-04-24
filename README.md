@@ -1,5 +1,5 @@
 # C-Hash-Table
-Implementation of a hash table in C.
+Implementation of a dictionary-style hash table in C.
 
 
 ##### How do I use it?
@@ -29,7 +29,7 @@ Hashing is done by multiplying the value of each character by its index in the s
 
 
 ##### Next steps
-Expanding the functionality so the table can take in different variable types as keys and values is high on the list. Beyond that, general refactoring to improve the speed and readability of the code, and adding additional features. 
+Expanding the functionality so the table can take in different variable types as keys and values is high on the list. Beyond that, general refactoring to improve the speed and readability of the code, and adding additional features, e.g. a set which just takes keys, without values.
 
 
 ##### I have suggestions/I have a bug to report/I want to help
