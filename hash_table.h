@@ -16,13 +16,13 @@ typedef struct Hash_Table {
 
 Hash_Table* new_ht();
 void resize(Hash_Table *dict);
-void hash_remove(Hash_Table *dict, char *key);
+void hash_delete(Hash_Table *dict, char *key);
 void hash_insert(Hash_Table* dict, char *key, char *value);
 int hash_index(char *key, int size);
 void assign_index(K_V_Pair **dict, K_V_Pair *pair, int index);
 char* hash_search(Hash_Table *dict, char *key);
 K_V_Pair* find_key_in_hash_table(Hash_Table *dict, char *key, int index);
-int table_size(Hash_Table* dict);
+int hash_size(Hash_Table* dict);
 
 
 // typedef union {

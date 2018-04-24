@@ -5,8 +5,6 @@
 #include "hash_table.h"
 #define MODULO 337
 
-// int hash_size = 16;
-
 
 Hash_Table* new_ht() {
     Hash_Table *new;
@@ -18,8 +16,6 @@ Hash_Table* new_ht() {
 
     return new;
 }
-
-
 
 
 int hash_index(char* key, int size) {
@@ -63,7 +59,6 @@ void resize(Hash_Table* dict) {
     free(dict->entries);
     dict->entries = new_table;
     printf("We're done!\n");
-    // return new_dict;
 }
 
 K_V_Pair* new_dict_entry(char *key, char *value) {
@@ -81,7 +76,7 @@ void hash_insert(Hash_Table* dict, char* key, char* value) {
     // Checks if we need to resize the dict, and calls resize function if so.
     // Then, it generates a new key-value pair and hashes the key to find an
     // index. Then, calls the assign_index function.
-    if (++(dict->cur_items) > ((dict->cur_size * 75) / 100)) {
+    if (dict->cur_items > ((dict->cur_size * 75) / 100)) {
         resize(dict);
     }
     int idx = hash_index(key, dict->cur_size);
@@ -92,18 +87,19 @@ void hash_insert(Hash_Table* dict, char* key, char* value) {
         return;
     }
     new_pair = new_dict_entry(key, value);
+    dict->cur_items++;
     assign_index(dict->entries, new_pair, idx);
 }
 
-void hash_remove(Hash_Table* dict, char* key) {
+void hash_delete(Hash_Table* dict, char* key) {
     // searches for the key in the hash table, and deletes it.
-    // dict = resize(dict);
-    if (--dict->cur_items * 4 <= dict->cur_size) {
+    if (dict->cur_items * 4 <= dict->cur_size) {
         resize(dict);
     }
     int index = hash_index(key, dict->cur_size);
     K_V_Pair* to_remove = find_key_in_hash_table(dict, key, index);
     if (to_remove) {
+        dict->cur_items--;
         if (to_remove->prev) {
             to_remove->prev->next = to_remove->next;
             if (to_remove->next) {
@@ -127,8 +123,7 @@ void assign_index(K_V_Pair** dict, K_V_Pair* new_pair, int i) {
     // Assigns a pair to an index. If key is already in the table, then the
     // key's associated value is changed and that's it. If the index is already
     // occupied, then we link that list!
-    // dict->cur_items++;
-    if (dict[i]) { // index is already occupied
+    if (dict[i]) { // i.e., index is already occupied
         K_V_Pair *current = dict[i];
         while (current) {
             if (strcmp(current->key, new_pair->key) == 0) {
@@ -173,7 +168,7 @@ K_V_Pair* find_key_in_hash_table(Hash_Table* dict, char* key, int index) {
     return NULL;
 }
 
-int table_size(Hash_Table* dict) {
+int hash_size(Hash_Table* dict) {
     printf("Current items: %d\n", dict->cur_items);
     printf("Current size: %d\n", dict->cur_size);
     return dict->cur_items;
