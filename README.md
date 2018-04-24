@@ -4,6 +4,7 @@ Implementation of a dictionary-style hash table in C.
 
 ##### How do I use it?
 _Installing_
+
 Download hash_table.c and hash_table.h. Be sure to `#include "hash_table.h"` in your main file, and put hash_table.c and hash_table.h in the same folder as your project so the compiler can find them.
 
 When compiling, be sure to include hash_table.c, e.g. `gcc -Wall -o main main.c hash_table.c`. A simple makefile is included to look at if you are so inclined.
@@ -11,6 +12,7 @@ When compiling, be sure to include hash_table.c, e.g. `gcc -Wall -o main main.c 
 N.b.: Currently, the hash table only accepts character pointers for key and value. Expanding on that functionality is on my to-do list.
 
 _How to hash_
+
 Create a new hash table with `new = new_ht();`. 
 
 To insert a key-value pair into new, or to reassign the value for a key already in your hash table, use `hash_insert(new, key, value);`. 
